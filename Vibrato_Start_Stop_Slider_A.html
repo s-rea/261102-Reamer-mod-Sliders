@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <title> Start Stop Fun</title>
+    </head>
+    <body>
+        <button id = "Start1">Start1</button>
+        <button id = "Stop1">Stop1</button>
+        <input id = "Modulator1" type="range" min="0" max="1000" step="10" value="0.0"><label id="Modulator1">Modulator_1</label>
+        <input id = "Index1" type="range" min="0" max="100" step="1" value="0.0"><label id="Index1">Index_1</label>
+         <script>
+ 
+const ctx = new AudioContext();
+
+let osc1, mod
+document.querySelector("#Start1").onclick = () =>
+
+{
+ 
+
+osc1 = new OscillatorNode(ctx);
+osc1.frequency.value = 110;
+osc1.type = "sine";
+
+const osc1Gain = new GainNode(ctx);
+osc1Gain.gain.value = 0.4;
+
+osc1.connect(osc1Gain);
+osc1Gain.connect(ctx.destination);
+
+mod = new OscillatorNode(ctx);
+mod.type = "sine"
+mod.frequency.value = 2; // what happens if you push this above 20Hz?
+
+const modulatorGain = new GainNode(ctx);
+modulatorGain.gain.value = 10; // right now, the oscillator will "wobble" by 100 Hz
+
+
+mod.connect(modulatorGain);
+modulatorGain.connect(osc1.frequency); // try switching to oscillator.detune
+
+ const slider1 = document.querySelector("#Modulator1");
+        slider1.addEventListener("input", () => {
+            ctx.resume();
+        modulatorGain.gain.value = Number(slider1.value);
+        document.querySelector("Modulator1").textContent = slider1.value;
+
+});
+
+ const slider2 = document.querySelector("#Index1");
+        slider2.addEventListener("input", () => {
+            ctx.resume();
+        mod.frequency.value = Number(slider2.value);
+        document.querySelector("Modulator1").textContent = slider2.value;
+
+});
+
+
+osc1.start();
+mod.start();
+
+}
+
+document.querySelector("#Stop1").onclick = () =>
+
+{
+
+osc1.stop();
+mod.stop();
+
+}
+
+
+
+        
+
+
+
+</script>
+
+</body>
+
+</html>
